@@ -1,0 +1,61 @@
+{
+  "info": { "name": "MERN Registration API", "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json" },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:5000/api" },
+    { "key": "id", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "Create registration (POST)",
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+        "pm.test('Status is 201', () => pm.response.to.have.status(201));",
+        "const j = pm.response.json();",
+        "pm.test('success is true', () => pm.expect(j.success).to.be.true);",
+        "pm.collectionVariables.set('id', j.data._id);"
+      ]}}],
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"fullName\": \"Test User\",\n  \"email\": \"test@example.com\",\n  \"phone\": \"9876543210\"\n}" },
+        "url": "{{baseUrl}}/registrations"
+      }
+    },
+    {
+      "name": "Get all (GET)",
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+        "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+        "pm.test('data is an array', () => pm.expect(pm.response.json().data).to.be.an('array'));"
+      ]}}],
+      "request": { "method": "GET", "url": "{{baseUrl}}/registrations" }
+    },
+    { "name": "Get one (GET)", "request": { "method": "GET", "url": "{{baseUrl}}/registrations/{{id}}" } },
+    {
+      "name": "Update (PUT)",
+      "request": {
+        "method": "PUT",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"fullName\": \"Updated User\",\n  \"email\": \"updated@example.com\",\n  \"phone\": \"9123456780\"\n}" },
+        "url": "{{baseUrl}}/registrations/{{id}}"
+      }
+    },
+    {
+      "name": "Validation error (POST, expect 400)",
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+        "pm.test('Status is 400', () => pm.response.to.have.status(400));"
+      ]}}],
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"fullName\": \"\",\n  \"email\": \"not-an-email\",\n  \"phone\": \"12\"\n}" },
+        "url": "{{baseUrl}}/registrations"
+      }
+    },
+    {
+      "name": "Delete (DELETE)",
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+        "pm.test('Status is 200', () => pm.response.to.have.status(200));"
+      ]}}],
+      "request": { "method": "DELETE", "url": "{{baseUrl}}/registrations/{{id}}" }
+    }
+  ]
+}
